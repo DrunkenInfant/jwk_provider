@@ -1,0 +1,29 @@
+{
+  "policies": [],
+  "modules": [
+    {
+      "type": "pki",
+      "path": "jwt_ca",
+      "pki_proxy_url": "http://localhost:8201",
+      "config": {
+        "max_lease_ttl": "87600h"
+      },
+      "ca": {
+        "common_name": "jwt_ca",
+        "ttl": "87600h"
+      },
+      "roles": [
+        {
+          "name": "trusted_service",
+          "ttl": "5m",
+          "common_name": "trusted_service"
+        },
+        {
+          "name": "another_trusted_service",
+          "ttl": "5m",
+          "common_name": "another_trusted_service"
+        }
+      ]
+    }
+  ]
+}
