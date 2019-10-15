@@ -2,6 +2,11 @@
 
 Stores and serves certificates, in jwk format, read from file system or provided by Vault.
 
+## TODO
+
+ * Add runtime generated certificate provider,
+   see [phx.gen.cert](https://github.com/phoenixframework/phoenix/blob/v1.4.9/lib/mix/tasks/phx.gen.cert.ex#L1) for inspiration.
+
 ## Installation
 
 ```elixir
