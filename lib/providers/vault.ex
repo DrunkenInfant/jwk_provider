@@ -1,15 +1,18 @@
 defmodule JwkProvider.Vault do
   use JwkProvider
 
-  def init(_) do
-    opts = Confex.fetch_env!(:jwk_provider, __MODULE__)
-
-    {:ok, vault} =
-      Vault.Conn.init(
-        host: Keyword.fetch!(opts, :url),
-        ca_fingerprint: {:sha256, Base.decode64!(Keyword.fetch!(opts, :ca_fingerprint))},
-        token: Keyword.fetch!(opts, :token)
-      )
+  def init(opts) do
+    {:ok, vault} = case Enum.into(opts, %{}) do
+      %{connection: vault} ->
+        {:ok, vault}
+      %{url: url, ca_fingerprint: ca_f, token: token} ->
+        Vault.Conn.init(
+          host: url,
+          ca_fingerprint: {:sha256, Base.decode64!(ca_f)},
+          token: token
+        )
+      _ -> {:error, "Invalid vault connection parameters"}
+    end
 
     issuer_opts =
       opts

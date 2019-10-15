@@ -1,8 +1,7 @@
 defmodule JwkProvider.FileSystem do
   use JwkProvider
 
-  def init(_) do
-    opts = Confex.fetch_env!(:jwk_provider, __MODULE__)
+  def init(opts) do
     public_path = Keyword.fetch!(opts, :public_key)
     private_path = Keyword.fetch!(opts, :private_key)
 

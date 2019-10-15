@@ -18,8 +18,9 @@ defmodule JwkProvider do
     vault: JwkProvider.Vault
   }
 
-  def provider do
-    Confex.fetch_env!(:jwk_provider, :provider)
+  def provider(opts) do
+    opts
+    |> Keyword.get(:provider, :fs)
     |> (&Map.fetch!(@provider_lookup, &1)).()
   end
 
@@ -38,8 +39,12 @@ defmodule JwkProvider do
   def child_spec(opts) do
     %{
       id: __MODULE__,
-      start: {__MODULE__, :start_link, [provider(), opts]}
+      start: {__MODULE__, :start_link, [provider(opts), opts]}
     }
+  end
+
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, {provider(opts), opts}, opts)
   end
 
   def start_link(mod, opts) do
@@ -47,7 +52,8 @@ defmodule JwkProvider do
   end
 
   def init({mod, opts}) do
-    {:ok, mod_state} = mod.init(opts)
+    provider = Keyword.get(opts, :provider, :fs)
+    {:ok, mod_state} = mod.init(Keyword.get(opts, provider, []))
     {:ok, %{mod: mod, mod_state: mod_state, public_jwks: [], private_jwk: nil}}
   end
 
